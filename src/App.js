@@ -34,18 +34,18 @@ const MainScreen = () => {
         {tasks.map((task) => (
           <li key={task.id}>
             <label>
-              <input
-                type="checkbox"
-                checked={task.completed}
-                onChange={() => handleTaskCompletion(task.id)}
-              />
-              <span
+            <span
                 style={{
                   textDecoration: task.completed ? 'line-through' : 'none',
                 }}
               >
                 {task.text}
               </span>
+              <input
+                type="checkbox"
+                checked={task.completed}
+                onChange={() => handleTaskCompletion(task.id)}
+              />
             </label>
           </li>
         ))}
