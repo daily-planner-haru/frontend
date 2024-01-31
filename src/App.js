@@ -1,20 +1,75 @@
+import React, { useState } from 'react';
 import './App.css';
-import { useState } from 'react';
-import KakaoLogin from 'react-kakao-login';
 
-const kakaoLogin = ()=>
-{
-    const Rest_api_key= process.env.REACT_APP_REST_API//REST API KEY
-    const redirect_uri = process.env.REACT_APP_REDIRECT_URI //Redirect URI
-    // oauth 요청 URL
-    const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${Rest_api_key}&redirect_uri=${redirect_uri}&response_type=code`
-    const handleLogin = ()=>{
-        window.location.href = kakaoURL
+const MainScreen = () => {
+  const [todayDate, setTodayDate] = useState(new Date().toLocaleDateString());
+  const [tasks, setTasks] = useState([
+    { id: 1, text: 'Task 1', completed: false },
+    { id: 2, text: 'Task 2', completed: false },
+  ]);
+
+  const handleTaskCompletion = (taskId) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === taskId ? { ...task, completed: !task.completed } : task
+      )
+    );
+  };
+
+  const handleAddTask = (text) => {
+    if (text.trim() !== '') {
+      setTasks((prevTasks) => [
+        ...prevTasks,
+        { id: Date.now(), text, completed: false },
+      ]);
     }
-    return(
-    <>
-    <button onClick={handleLogin}>카카오 로그인</button>
-    </>
-    )
-}
-export default kakaoLogin
+  };
+
+  return (
+    <div className="main-container">
+      <h1>하루
+      </h1>
+      <p>{todayDate}</p>
+      <ul>
+        {tasks.map((task) => (
+          <li key={task.id}>
+            <label>
+              <input
+                type="checkbox"
+                checked={task.completed}
+                onChange={() => handleTaskCompletion(task.id)}
+              />
+              <span
+                style={{
+                  textDecoration: task.completed ? 'line-through' : 'none',
+                }}
+              >
+                {task.text}
+              </span>
+            </label>
+          </li>
+        ))}
+      </ul>
+      <input
+        type="text"
+        placeholder="Enter new task..."
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            handleAddTask(e.target.value);
+            e.target.value = '';
+          }
+        }}
+      />
+    </div>
+  );
+};
+
+const App = () => {
+  return (
+    <div className="app-container">
+      <MainScreen/>
+    </div>
+  );
+};
+
+export default App;
